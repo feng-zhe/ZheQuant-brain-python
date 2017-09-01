@@ -11,7 +11,11 @@ print(' [*] Waiting for messages. To exit press CTRL+C')
 def callback(ch, method, properties, body):
     print(" [x] Received message %r" % body)
     msg = json.loads(body)
-    # todo: parse msg["cmd"]
+    cmd_strs = msg["cmd"].split()
+    for cmd_str in cmd_strs:
+        # todo: parse msg["cmd"]
+        # e.g. schedule -n JOB_NAME -dsc "JOB_DESC" -t JOB_TYPE -p "JOB_PARAMETERS"
+        pass
     ch.basic_ack(delivery_tag = method.delivery_tag)
 
 channel.basic_qos(prefetch_count=1) # only accept one message
