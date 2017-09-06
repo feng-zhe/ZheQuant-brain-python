@@ -15,25 +15,22 @@ def get_db_client():
         print("Server not available")
         return None
 
-def get_stock_data(stock_dict):
+def get_recent_data(days, code=None):
     '''Get the data of the stock specified by the input
 
     This function retreives data of ONLY one stock.
 
     Args:
-        stock_dict: A dict mapping information about the stock 
-            to be queried. For example:
-            {
-                'code': 'XXXXXX',
-                'start_date': datatime.datatime(YYYY,MM,DD,tzinfo=timezone.utc)
-                'end_date': datatime.datatime(YYYY,MM,DD,tzinfo=timezone.utc)
-            }
+        days:   The length of the days
+        code:   (Optional) the code of the stock. If omited,
+                it will retreive data of all stock codes
     Returns:
         A list of dicts each contains the data of this stock of one day.
         And it is sorted descending by date.
         For example:
         [
             {
+                'code': XXXX,
                 'date': datatime.datatime(YYYY,MM,DD,tzinfo=timezone.utc)
                 'open_price': xx.xx,
                 'close_price': xx.xx
@@ -45,18 +42,26 @@ def get_stock_data(stock_dict):
     if not client:
         return False
     db = client.fin
-    filter_dict = {
-            'code':stock_dict['code'],
-            'date':{
-                '$gte':stock_dict['start_date'],
-                '$lte':stock_dict['end_date']
+    if code != None:
+        filter_dict = { 'code': code }
+        proj_dict = {
+                'code': True,
+                'date': True,
+                'open_price': True,
+                'close_price': True
                 }
-            }
-    proj_dict = {
-            'date': True,
-            'open_price': True,
-            'close_price': True
-            }
-    sort_list = [('date':pymongo.DESCENDING)]
-    cursor = db.find(filter=filter_dict, projection=proj_dict, sort=sort_list)
-    return list(cursor)
+        sort_list = [('date':pymongo.DESCENDING)]
+        cursor = db.stocks.find(filter=filter_dict, projection=proj_dict, sort=sort_list, limit=days)
+        return list(cursor)
+    else:
+        codes = get_code_list()
+        return [doc for x in codes for doc in get_recent_data(days,x)]
+
+def get_code_list():
+    client = get_db_client()
+    if not client:
+        return False
+    db = client.fin
+    pipeline = [ { '$group': {'_id':'code'} } ]
+    cursor = db.stocks.aggregate(pipeline)
+    return [doc['_id'] for doc in list(cursor)]
