@@ -2,11 +2,7 @@ import pika
 import time
 import json
 from zq_calc.calc_mgr import calc_mgr
-
-def cmd_str2dic(cmd_str):
-    for cmd_str in cmd_strs:
-        # e.g. schedule -n JOB_NAME -dsc "JOB_DESC" -t JOB_TYPE -p "JOB_PARAMETERS"
-        pass
+from zq_gen.helper import cmd_str2dic
 
 def main():
     connection = pika.BlockingConnection(pika.ConnectionParameters(host='rabbitmq'))
@@ -18,8 +14,10 @@ def main():
         SCHEDULE_CMD_NAME = 'schedule'
         print(' [x] Received message %r' % body)
         msg = json.loads(body.decode('utf-8'))
-        cmd_strs = msg["cmd"].split()
-        print(' cmd_strs is: %r' % cmd_strs)
+        cmd_str = msg["cmd"]
+        print(' [*] cmd_strs is: %r' % cmd_str)
+        # Possible command
+        # 1. schedule -n JOB_NAME -dsc "JOB_DESC" -t JOB_TYPE -p "JOB_PARAMETERS"
         cmd_dict = cmd_str2dic(cmd_str)
         cmd_name = cmd_dict['cmd_name']
         # check the command type and give it to different managers

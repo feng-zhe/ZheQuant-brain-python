@@ -15,7 +15,7 @@ def get_db_client():
         print("Server not available")
         return None
 
-def get_recent_data(days, code=None):
+def get_recent_stock_data(days, code=None):
     '''Get the data of the stock specified by the input
 
     This function retreives data of ONLY one stock.
@@ -25,8 +25,10 @@ def get_recent_data(days, code=None):
         code:   (Optional) the code of the stock. If omited,
                 it will retreive data of all stock codes
     Returns:
-        A list of dicts each contains the data of this stock of one day.
-        And it is sorted descending by date.
+        If called with one stock code, it returns a list of dicts 
+        each contains the data of this stock of one day.
+        If called with no stock code, it returns a list of lists
+        No matter which way it is called, the result is sorted descending by date.
         For example:
         [
             {
@@ -37,6 +39,7 @@ def get_recent_data(days, code=None):
             },
             ...
         ]
+        or a list of it
     '''
     client = get_db_client()
     if not client:
@@ -45,6 +48,7 @@ def get_recent_data(days, code=None):
     if code != None:
         filter_dict = { 'code': code }
         proj_dict = {
+                '_id': False,
                 'code': True,
                 'date': True,
                 'open_price': True,
@@ -55,7 +59,7 @@ def get_recent_data(days, code=None):
         return list(cursor)
     else:
         codes = get_code_list()
-        return [doc for x in codes for doc in get_recent_data(days,x)]
+        return [get_recent_stock_data(days,x) for x in codes]
 
 def get_code_list():
     client = get_db_client()
