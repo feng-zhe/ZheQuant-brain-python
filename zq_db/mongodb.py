@@ -6,7 +6,14 @@ from pymongo import MongoClient
 import datetime
 
 def get_db_client():
-    ''' get the db client or None if error '''
+    ''' Get the db client or None if error 
+    
+    Returns:
+        The database object for later usage if succeeded, None otherwise.
+        
+    Raises:
+        N/A
+    '''
     client = MongoClient('db', 27017)
     try: # this is because of change in pymongo 3.0, we have to do this
         client.admin.command('ismaster') # The ismaster command is cheap and does not require auth.
@@ -40,6 +47,9 @@ def get_recent_stock_data(days, code=None):
             ...
         ]
         or a list of it
+    
+    Raises:
+        N/A
     '''
     client = get_db_client()
     if not client:
@@ -62,6 +72,14 @@ def get_recent_stock_data(days, code=None):
         return [get_recent_stock_data(days,x) for x in codes]
 
 def get_code_list():
+    ''' Get a list of stock codes 
+    
+    Returns:
+        A list of stock codes.
+    
+    Raises:
+        N/A
+    '''
     client = get_db_client()
     if not client:
         return False
