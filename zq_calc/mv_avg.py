@@ -8,6 +8,7 @@ def mv_avg(cmd_str):
         cmd_str:    The command string
                     -d: days range used when calculating moving average
                     -n: number of the stocks returned
+                    e.g: "-d 20 -n 5"
     Returns:
         A list of dicts representing the top n stocks ranked by moving average
 
@@ -17,5 +18,17 @@ def mv_avg(cmd_str):
     cmd_dict = cmd_str2dic(cmd_str)
     days = int(cmd_dict['-d'])
     num = int(cmd_dict['-n'])
-    data = get_recent_stock_data(days, num)
-    pass # TODO
+    rst = []
+    data = get_recent_stock_data(days) # the data is a list of lists which each represents docs of one stock
+    for docs in data:
+        price_now = docs[0]['close_price']
+        code = docs[0]['code']
+        i = 1
+        sum = 0
+        while i<len(docs):
+            sum += docs[i]['close_price']
+        avg = sum/len(docs)
+        diff = avg - price_now
+        rst.append({'code': code, 'diff': diff})
+    rst = sorted(rst, key=lambda k: k['diff'], reverse=True)
+    return rst[0:num]
