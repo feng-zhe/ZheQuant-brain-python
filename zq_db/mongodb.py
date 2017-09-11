@@ -64,7 +64,7 @@ def get_recent_stock_data(days, code=None):
                 'open_price': True,
                 'close_price': True
                 }
-        sort_list = [('date':pymongo.DESCENDING)]
+        sort_list = [('date',pymongo.DESCENDING)]
         cursor = db.stocks.find(filter=filter_dict, projection=proj_dict, sort=sort_list, limit=days)
         return list(cursor)
     else:

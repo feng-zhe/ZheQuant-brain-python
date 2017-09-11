@@ -1,4 +1,4 @@
-from mv_avg import mv_avg
+from zq_calc.mv_avg import mv_avg
 
 def calc_mgr(cmd_dict, cb):
     MOVING_AVERAGE_STR = 'mv_avg' # moving average
