@@ -7,30 +7,33 @@ from zq_gen.str import cmd_str2dic
 def main():
     connection = pika.BlockingConnection(pika.ConnectionParameters(host='rabbitmq'))
     channel = connection.channel()
-    channel.queue_declare(queue='jobs-todo', durable=True) # declare the queue
+    channel.queue_declare(queue='jobs-todo', durable=True)                      # declare the queue
     print(' [*] Waiting for messages. To exit press CTRL+C')
 
     def callback(ch, method, properties, body):
-        SCHEDULE_CMD_NAME = 'schedule'
+        SCHEDULE_CMD = 'schedule'
         print(' [x] Received message %r' % body)
         msg = json.loads(body.decode('utf-8'))
         cmd_str = msg["cmd"]
         print(' [*] cmd_strs is: %r' % cmd_str)
+
         # Possible command
         # 1. schedule -n JOB_NAME -dsc "JOB_DESC" -t JOB_TYPE -p "JOB_PARAMETERS"
+
         cmd_dict = cmd_str2dic(cmd_str)
         cmd_name = cmd_dict['cmd_name']
-        # check the command type and give it to different managers
-        if  cmd_name == SCHEDULE:
+        if  cmd_name == SCHEDULE_CMD:                                           # check the command type and give it to different managers
+            def calc_cb(result):
+                print(result, calc_cb)                                                   # TODO
             calc_mgr(cmd_dict)
         elif cmd_name == DISPLAY:
-            pass # TODO: display mananger
+            pass                                                                # TODO: display mananger
         else:
             print(' [!] Unknow command %r, skipped' % cmd_name)
         ch.basic_ack(delivery_tag = method.delivery_tag)
 
-    channel.basic_qos(prefetch_count=1) # only accept one message
-    channel.basic_consume(callback, queue='jobs-todo') # need acknowledge
+    channel.basic_qos(prefetch_count=1)                                         # only accept one message
+    channel.basic_consume(callback, queue='jobs-todo')                          # need acknowledge
 
     channel.start_consuming()
 
