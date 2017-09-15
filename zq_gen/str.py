@@ -8,35 +8,42 @@ def cmd_str2dic(cmd_str):
     rst = {}
     if len(words) >= 1:
         begin = 0;
-        if words[0][0:1] != '-': # the first one could be the the name of the command
+        if words[0][0:1] != '-':                # the first one could be the the name of the command
             rst['cmd_name'] = words[0]
             begin = 1
-        curr_word = '...' # default parameter
+        curr_word = '...'                       # default parameter
+        quoted = False
         for word in words[begin:]:
-            if word.startswith('"'):
-                word = word[1:]
-            if word.endswith('"'):
-                word = word[:-1]
-            if word[0:1]=='-': # a new parameter
-                curr_word = word
-                rst[curr_word] = ''
-            elif len(rst[curr_word])==0: # first value to current parameter
+            if quoted:                          # currently expecting the reverse double quote
+                if word.endswith('"'):
+                    quoted = False
+                    word = word[:-1]
+            else:
+                if word[0:1]=='-':              # a new parameter
+                    curr_word = word
+                    rst[curr_word] = ''
+                    continue
+                if word.startswith('"'):
+                    quoted = True
+                    word = word[1:]
+                                                # append to current parameter
+            if len(rst[curr_word]) == 0:        # first value 
                 rst[curr_word] += word
-            else: # following value to current parameter
+            else:                               # following value, add a space
                 rst[curr_word] += ' '+word
     return rst
 
 # Unit test class
 class TestString(unittest.TestCase):
     def test_primary_cmd(self):
-        cmd_str = 'schedule -n JOB_NAME -dsc JOB_DESC JOB_DESC2 -t JOB_TYPE -p "JOB_PARAMETERS"'
+        cmd_str = 'schedule -n job name -dsc job description -t job_type -p "-d 20 -n 5"'
         cmd_dict = cmd_str2dic(cmd_str)
         exp_dict = {
                 'cmd_name': 'schedule',
-                '-n':       'JOB_NAME',
-                '-dsc':     'JOB_DESC JOB_DESC2',
-                '-t':       'JOB_TYPE',
-                '-p':       'JOB_PARAMETERS'
+                '-n':       'job name',
+                '-dsc':     'job description',
+                '-t':       'job_type',
+                '-p':       '-d 20 -n 5'
                 }
         self.assertEqual(cmd_dict, exp_dict)
 
