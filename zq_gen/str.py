@@ -8,11 +8,15 @@ def cmd_str2dic(cmd_str):
     rst = {}
     if len(words) >= 1:
         begin = 0;
-        if words[0][0:1] != '-': # the first one could the the name of the command
+        if words[0][0:1] != '-': # the first one could be the the name of the command
             rst['cmd_name'] = words[0]
             begin = 1
-        curr_word = ''
+        curr_word = '...' # default parameter
         for word in words[begin:]:
+            if word.startswith('"'):
+                word = word[1:]
+            if word.endswith('"'):
+                word = word[:-1]
             if word[0:1]=='-': # a new parameter
                 curr_word = word
                 rst[curr_word] = ''
@@ -25,7 +29,7 @@ def cmd_str2dic(cmd_str):
 # Unit test class
 class TestString(unittest.TestCase):
     def test_primary_cmd(self):
-        cmd_str = 'schedule -n JOB_NAME -dsc JOB_DESC JOB_DESC2 -t JOB_TYPE -p JOB_PARAMETERS'
+        cmd_str = 'schedule -n JOB_NAME -dsc JOB_DESC JOB_DESC2 -t JOB_TYPE -p "JOB_PARAMETERS"'
         cmd_dict = cmd_str2dic(cmd_str)
         exp_dict = {
                 'cmd_name': 'schedule',
