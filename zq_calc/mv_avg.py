@@ -1,5 +1,5 @@
 from zq_db.mongodb import get_recent_stock_data
-from zq_gen.helper import cmd_str2dic
+from zq_gen.str import cmd_str2dic
 
 def mv_avg(cmd_str):
     '''Calculate the top stocks ranked by moving average

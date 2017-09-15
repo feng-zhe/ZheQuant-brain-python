@@ -2,7 +2,7 @@ import pika
 import time
 import json
 from zq_calc.calc_mgr import calc_mgr
-from zq_gen.helper import cmd_str2dic
+from zq_gen.str import cmd_str2dic
 
 def main():
     connection = pika.BlockingConnection(pika.ConnectionParameters(host='rabbitmq'))
