@@ -14,7 +14,8 @@ def main():
         SCHEDULE_CMD = 'schedule'
         print(' [x] Received message %r' % body)
         msg = json.loads(body.decode('utf-8'))
-        cmd_str = msg["cmd"]
+        cmd_str = msg['cmd']
+        job_id = msg['id']
         print(' [*] cmd_strs is: %r' % cmd_str)
 
         # Possible command
@@ -23,21 +24,35 @@ def main():
         cmd_dict = cmd_str2dic(cmd_str)
         cmd_name = cmd_dict['cmd_name']
         if  cmd_name == SCHEDULE_CMD:                                           # check the command type and give it to different managers
+
+            def calc_cb(result):
+                ''' The callback function when calculation job is done '''
+                connection = pika.BlockingConnection(pika.ConnectionParameters(host='rabbitmq'))
+                channel = connection.channel()
+                channel.queue_declare(queue='jobs-done', durable=True)
+                msg2send = {
+                        'id':       job_id,
+                        'status':   'done',
+                        'result':   result
+                    }
+                channel.basic_publish(
+                        exchange='',
+                        routing_key='jobs-done',
+                        body=json.dumps(msg2send),
+                        properties=pika.BasicProperties(
+                            delivery_mode = 2, # make message persistent
+                        ))
+                ch.basic_ack(delivery_tag = method.delivery_tag)
+
             calc_mgr(cmd_dict, calc_cb)
         elif cmd_name == DISPLAY:
             pass                                                                # TODO: display mananger
         else:
             print(' [!] Unknow command %r, skipped' % cmd_name)
-        ch.basic_ack(delivery_tag = method.delivery_tag)
 
     channel.basic_qos(prefetch_count=1)                                         # only accept one message
     channel.basic_consume(callback, queue='jobs-todo')                          # need acknowledge
-
     channel.start_consuming()
-
-def calc_cb(result):
-    ''' The callback function when calculation job is done '''
-    print(result)                                                               # TODO
 
 if __name__ == '__main__':
     while True:
