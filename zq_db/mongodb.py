@@ -2,7 +2,7 @@
 This file contains the functions to read data from mongodb
 '''
 
-from pymongo import MongoClient
+import pymongo
 import datetime
 
 def get_db_client():
@@ -14,7 +14,7 @@ def get_db_client():
     Raises:
         N/A
     '''
-    client = MongoClient('db', 27017)
+    client = pymongo.MongoClient('db', 27017)
     try: # this is because of change in pymongo 3.0, we have to do this
         client.admin.command('ismaster') # The ismaster command is cheap and does not require auth.
         return client
@@ -55,7 +55,7 @@ def get_recent_stock_data(days, code=None):
     if not client:
         return False
     db = client.fin
-    if code != None:
+    if code:
         filter_dict = { 'code': code }
         proj_dict = {
                 '_id': False,
@@ -84,6 +84,6 @@ def get_code_list():
     if not client:
         return False
     db = client.fin
-    pipeline = [ { '$group': {'_id':'code'} } ]
+    pipeline = [ { '$group': {'_id':'$code'} } ]
     cursor = db.stocks.aggregate(pipeline)
     return [doc['_id'] for doc in list(cursor)]

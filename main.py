@@ -23,9 +23,7 @@ def main():
         cmd_dict = cmd_str2dic(cmd_str)
         cmd_name = cmd_dict['cmd_name']
         if  cmd_name == SCHEDULE_CMD:                                           # check the command type and give it to different managers
-            def calc_cb(result):
-                print(result, calc_cb)                                                   # TODO
-            calc_mgr(cmd_dict)
+            calc_mgr(cmd_dict, calc_cb)
         elif cmd_name == DISPLAY:
             pass                                                                # TODO: display mananger
         else:
@@ -36,6 +34,10 @@ def main():
     channel.basic_consume(callback, queue='jobs-todo')                          # need acknowledge
 
     channel.start_consuming()
+
+def calc_cb(result):
+    ''' The callback function when calculation job is done '''
+    print(result)                                                               # TODO
 
 if __name__ == '__main__':
     while True:
