@@ -19,17 +19,15 @@ def mv_avg(cmd_str):
     days = int(cmd_dict['-d'])
     num = int(cmd_dict['-n'])
     rst = []
-    data = get_recent_stock_data(days) # the data is a list of lists each of which represents docs of one stock
+    data = get_recent_stock_data(days)                                      # the data is a list of lists each of which represents docs of one stock
     for docs in data:
         price_now = docs[0]['close_price']
         code = docs[0]['code']
-        i = 1
         sum = 0
-        docs_len = len(docs)
-        while i<docs_len:
-            sum += docs[i]['close_price']
-        avg = sum/docs_len
-        diff = avg - price_now
+        for doc in docs:                                                    # average price calculation includes the current price
+            sum += doc['close_price']
+        avg = sum/len(docs)
+        diff = avg - price_now                                              # currently use average minus current price
         rst.append({'code': code, 'diff': diff})
     rst = sorted(rst, key=lambda k: k['diff'], reverse=True)
     return rst[0:num]
