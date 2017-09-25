@@ -43,6 +43,7 @@ def main():
                             delivery_mode = 2, # make message persistent
                         ))
                 ch.basic_ack(delivery_tag = method.delivery_tag)
+                print(' [x] Calculation result has been sent. Task is done.')
 
             calc_mgr(cmd_dict, calc_cb)
         elif cmd_name == DISPLAY:

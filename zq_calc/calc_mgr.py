@@ -6,12 +6,12 @@ def calc_mgr(cmd_dict, cb):
     rst = ''
     calc_type = cmd_dict['-t']
     if  calc_type == MOVING_AVERAGE_STR:
-        print(' [x] Identify calculation for moving average')
+        print(' [x] Identified calculation for moving average')
         rst = mv_avg(cmd_dict['-p']) 
-        cb(rst)
     elif calc_type == INC_PERCENT_STR:
         # TODO
         pass
     else:
         print(' [!]Unkown calculation type %s, skipped' % calc_type)
+    print(' [x] Calculation done')
     cb(rst)
