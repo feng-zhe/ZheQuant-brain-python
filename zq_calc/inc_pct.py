@@ -1,4 +1,5 @@
 import json
+from zq_db.mongodb import get_single_stock_data
 
 def inc_pct(json_str):
     '''Calculate the increasement by percentage
@@ -22,7 +23,8 @@ def inc_pct(json_str):
     compo = json.loads(json_str)
     begin_value = 0                                     # begin value
     for key, val in compo:
-        pass                                            #TODO
+        get_single_stock_data(#TODO
+        begin_value += 
 
     curr_value = 0                                      # current value
     for key, val in compo:

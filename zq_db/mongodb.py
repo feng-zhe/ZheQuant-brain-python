@@ -58,11 +58,11 @@ def get_recent_stock_data(days, code=None):
     if code:
         filter_dict = { 'code': code }
         proj_dict = {
-                '_id': False,
-                'code': True,
-                'date': True,
-                'open_price': True,
-                'close_price': True
+                '_id'         : False,
+                'code'        : True,
+                'date'        : True,
+                'open_price'  : True,
+                'close_price' : True
                 }
         sort_list = [('date',pymongo.DESCENDING)]
         cursor = db.stocks.find(filter=filter_dict, projection=proj_dict, sort=sort_list, limit=days)
@@ -87,3 +87,31 @@ def get_code_list():
     pipeline = [ { '$group': {'_id':'$code'} } ]
     cursor = db.stocks.aggregate(pipeline)
     return [doc['_id'] for doc in list(cursor)]
+
+def get_single_stock_data(code, dt):
+    '''Get data of the stock on the specified date
+    
+    This function retrieves one data of the stock and date specified
+
+    Args:
+        code : A string which is the code of the stock
+        dt   : A datetime object which is the date of the record
+
+    Returns:
+        A dictionary which contains transcation information 
+        of the specified stock on the specified date
+
+    Raises:
+        N/A
+    '''
+    client = get_db_client()
+    if not client:
+        return {}
+    db = client.fin
+    find_filter = { 
+            'code': code, 
+            'date': dt 
+            }
+    return db.stocks.find_one(filter=find_filter)
+    
+
