@@ -1,3 +1,7 @@
+'''
+This module contains calculator to calculate the increased percentage
+'''
+
 import json
 import datetime
 from zq_gen.str import cmd_str2dic
