@@ -19,11 +19,10 @@ def request_data(start, end, code=None):
 
     Raises:
         N/A
-    '''
-    #TODO
+    ''' #TODO
     pass
 
-def insert_data(docs):
+def insert_stock_data(docs):
     '''
     Insert document into database
 
@@ -37,6 +36,18 @@ def insert_data(docs):
         N/A
     '''
     #TODO
+    pass
+
+def extract_stock_data(rsp):
+    '''
+    Parse the returned dictionary object
+
+    Args:
+        rsp:    a dictionary representing the response return by request
+
+    Returns:
+        A dictionary as the stock data
+    '''
     pass
 
 def crawl(cmd):
