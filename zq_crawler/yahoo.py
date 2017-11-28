@@ -3,6 +3,8 @@ The crawler to extract stock data from finance.yahoo.com
 '''
 
 import requests
+import pytz
+from datetime import datetime
 
 def request_data(start, end, code=None):
     '''
@@ -46,9 +48,31 @@ def extract_stock_data(rsp):
         rsp:    a dictionary representing the response return by request
 
     Returns:
-        A dictionary as the stock data
+        A list of dicts as the stock data
+
+    Raises:
+        KeyError, TypeError, IndexError, RuntimeError
     '''
-    pass
+    code       = rsp['chart']['result'][0]['meta']['symbol']
+    timestamps = rsp['chart']['result'][0]['timestamp']
+    volumes    = rsp['chart']['result'][0]['indicators']['quote'][0]['volume']
+    closes     = rsp['chart']['result'][0]['indicators']['quote'][0]['close']
+    highs      = rsp['chart']['result'][0]['indicators']['quote'][0]['high']
+    lows       = rsp['chart']['result'][0]['indicators']['quote'][0]['low']
+    lens       = len(timestamps)
+
+    if not len(timestamps)==len(volumes)==len(closes)==len(highs)==len(lows):
+        raise RunetimeError('Length of data fields is not consistent')
+
+    tz = pytz.timezone('Asia/Shanghai')
+    return [{
+            'code'   : code,
+            'date'   : datetime.fromtimestamp(timestamps[i],tz=tz).replace(hour=15,minute=0,second=0,microsecond=0),
+            'volume' : volumes[i],
+            'close'  : round(closes[i],2),
+            'high'   : round(highs[i],2),
+            'low'    : round(lows[i],2)
+            } for i in range(0,lens) if(volumes[i])]
 
 def crawl(cmd):
     '''

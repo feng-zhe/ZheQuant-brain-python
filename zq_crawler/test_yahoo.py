@@ -17,58 +17,68 @@ class TestYahooCrawler(unittest.TestCase):
         tz = pytz.timezone('Asia/Shanghai')
         exp_docs = [
                 {
-                    'code': '600497.SS',
-                    'date': datetime.fromtimestamp(1510795800, tz=tz).replace(hour=15, minute=0),    # set to close time because we use close time
-                    'volumn': 34039227,
-                    'close_price': 6.51
+                    'code'   : '600497.SS',
+                    'date'   : datetime.fromtimestamp(1510795800, tz=tz).replace(hour=15, minute=0, second=0, microsecond=0),    # set to close time because we use close time
+                    'volume' : 34039227,
+                    'close'  : 6.51,
+                    'low'    : 6.49,
+                    'high'   : 6.68
                 },
                 {
-                    'code': '600497.SS',
-                    'date': datetime.fromtimestamp(1510795800, tz=tz).replace(hour=15, minute=0),
-                    'volumn': 34039227,
-                    'close_price': 6.510000228881836
+                    'code'   : '600497.SS',
+                    'date'   : datetime.fromtimestamp(1510882200, tz=tz).replace(hour=15, minute=0, second=0, microsecond=0),
+                    'volume' : 53016969,
+                    'close'  : 6.20,
+                    'low'    : 6.10,
+                    'high'   : 6.54
                 },
                 {
-                    'code': '600497.SS',
-                    'date': datetime.fromtimestamp(1510882200, tz=tz).replace(hour=15, minute=0),
-                    'volumn': 53016969,
-                    'close_price': 6.199999809265137
+                    'code'   : '600497.SS',
+                    'date'   : datetime.fromtimestamp(1511141400, tz=tz).replace(hour=15, minute=0, second=0, microsecond=0),
+                    'volume' : 28656684,
+                    'close'  : 6.24,
+                    'low'    : 6.03,
+                    'high'   : 6.26
                 },
                 {
-                    'code': '600497.SS',
-                    'date': datetime.fromtimestamp(1511141400, tz=tz).replace(hour=15, minute=0),
-                    'volumn': 28656684,
-                    'close_price': 6.239999771118164
+                    'code'   : '600497.SS',
+                    'date'   : datetime.fromtimestamp(1511227800, tz=tz).replace(hour=15, minute=0, second=0, microsecond=0),
+                    'volume' : 39235021,
+                    'close'  : 6.18,
+                    'low'    : 6.12,
+                    'high'   : 6.26
                 },
                 {
-                    'code': '600497.SS',
-                    'date': datetime.fromtimestamp(1511227800, tz=tz).replace(hour=15, minute=0),
-                    'volumn': 39235021,
-                    'close_price': 6.179999828338623
+                    'code'   : '600497.SS',
+                    'date'   : datetime.fromtimestamp(1511314200, tz=tz).replace(hour=15, minute=0, second=0, microsecond=0),
+                    'volume' : 41324595,
+                    'close'  : 6.27,
+                    'low'    : 6.17,
+                    'high'   : 6.28
                 },
                 {
-                    'code': '600497.SS',
-                    'date': datetime.fromtimestamp(1511314200, tz=tz).replace(hour=15, minute=0),
-                    'volumn': 41324595,
-                    'close_price': 6.269999980926514
+                    'code'   : '600497.SS',
+                    'date'   : datetime.fromtimestamp(1511400600, tz=tz).replace(hour=15, minute=0, second=0, microsecond=0),
+                    'volume' : 63648648,
+                    'close'  : 6.31,
+                    'low'    : 6.23,
+                    'high'   : 6.48
                 },
                 {
-                    'code': '600497.SS',
-                    'date': datetime.fromtimestamp(1511400600, tz=tz).replace(hour=15, minute=0),
-                    'volumn': 63648648,
-                    'close_price': 6.309999942779541
+                    'code'   : '600497.SS',
+                    'date'   : datetime.fromtimestamp(1511487000, tz=tz).replace(hour=15, minute=0, second=0, microsecond=0),
+                    'volume' : 52108224,
+                    'close'  : 6.50,
+                    'low'    : 6.19,
+                    'high'   : 6.52
                 },
                 {
-                    'code': '600497.SS',
-                    'date': datetime.fromtimestamp(1511487000, tz=tz).replace(hour=15, minute=0),
-                    'volumn': 52108224,
-                    'close_price': 6.5
-                },
-                {
-                    'code': '600497.SS',
-                    'date': datetime.fromtimestamp(1511766003, tz=tz).replace(hour=15, minute=0),
-                    'volumn': 54005417,
-                    'close_price': 6.510000228881836
+                    'code'   : '600497.SS',
+                    'date'   : datetime.fromtimestamp(1511766003, tz=tz).replace(hour=15, minute=0, second=0, microsecond=0),
+                    'volume' : 54005417,
+                    'close'  : 6.51,
+                    'low'    : 6.45,
+                    'high'   : 6.67
                 }
                 ]
         self.assertEqual(act_docs, exp_docs)
