@@ -8,4 +8,6 @@ before_install:
 install:
     - pipenv install --dev
 script:
-    - pytest
+    - coverage run --source=. -m pytest
+after_success:
+    - coveralls
