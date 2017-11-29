@@ -34,19 +34,8 @@ def get_recent_stock_data(days, code=None):
     Returns:
         If called with one stock code, it returns a list of dicts 
         each contains the data of this stock of one day.
-        If called with no stock code, it returns a list of lists
+        If called with no stock code, it returns a list of lists of dicts
         No matter which way it is called, the result is sorted descending by date.
-        For example:
-        [
-            {
-                'code': XXXX,
-                'date': datatime.datatime(YYYY,MM,DD,tzinfo=timezone.utc)
-                'open_price': xx.xx,
-                'close_price': xx.xx
-            },
-            ...
-        ]
-        or a list of it
     
     Raises:
         N/A
@@ -58,11 +47,13 @@ def get_recent_stock_data(days, code=None):
     if code:
         filter_dict = { 'code': code }
         proj_dict = {
-                '_id'         : False,
-                'code'        : True,
-                'date'        : True,
-                'open_price'  : True,
-                'close_price' : True
+                '_id'   : False,
+                'code'  : True,
+                'date'  : True,
+                'open'  : True,
+                'close' : True,
+                'high'  : True,
+                'low'   : True
                 }
         sort_list = [('date',pymongo.DESCENDING)]
         cursor = db.stocks.find(filter=filter_dict, projection=proj_dict, sort=sort_list, limit=days)

@@ -49,6 +49,7 @@ class TestYahooCrawler(unittest.TestCase):
                 'date'   : datetime.fromtimestamp(1510795800, tz=tzinfo)\
                                     .replace(hour=15, minute=0, second=0, microsecond=0),
                 'volume' : 34039227,
+                'open'   : 6.65,
                 'close'  : 6.51,
                 'low'    : 6.49,
                 'high'   : 6.68
@@ -58,6 +59,7 @@ class TestYahooCrawler(unittest.TestCase):
                 'date'   : datetime.fromtimestamp(1510882200, tz=tzinfo)\
                                     .replace(hour=15, minute=0, second=0, microsecond=0),
                 'volume' : 53016969,
+                'open'   : 6.47,
                 'close'  : 6.20,
                 'low'    : 6.10,
                 'high'   : 6.54
@@ -67,6 +69,7 @@ class TestYahooCrawler(unittest.TestCase):
                 'date'   : datetime.fromtimestamp(1511141400, tz=tzinfo)\
                                     .replace(hour=15, minute=0, second=0, microsecond=0),
                 'volume' : 28656684,
+                'open'   : 6.20,
                 'close'  : 6.24,
                 'low'    : 6.03,
                 'high'   : 6.26
@@ -76,6 +79,7 @@ class TestYahooCrawler(unittest.TestCase):
                 'date'   : datetime.fromtimestamp(1511227800, tz=tzinfo)\
                                     .replace(hour=15, minute=0, second=0, microsecond=0),
                 'volume' : 39235021,
+                'open'   : 6.21,
                 'close'  : 6.18,
                 'low'    : 6.12,
                 'high'   : 6.26
@@ -85,6 +89,7 @@ class TestYahooCrawler(unittest.TestCase):
                 'date'   : datetime.fromtimestamp(1511314200, tz=tzinfo)\
                                     .replace(hour=15, minute=0, second=0, microsecond=0),
                 'volume' : 41324595,
+                'open'   : 6.27,
                 'close'  : 6.27,
                 'low'    : 6.17,
                 'high'   : 6.28
@@ -94,6 +99,7 @@ class TestYahooCrawler(unittest.TestCase):
                 'date'   : datetime.fromtimestamp(1511400600, tz=tzinfo)\
                                     .replace(hour=15, minute=0, second=0, microsecond=0),
                 'volume' : 63648648,
+                'open'   : 6.29,
                 'close'  : 6.31,
                 'low'    : 6.23,
                 'high'   : 6.48
@@ -103,6 +109,7 @@ class TestYahooCrawler(unittest.TestCase):
                 'date'   : datetime.fromtimestamp(1511487000, tz=tzinfo)\
                                     .replace(hour=15, minute=0, second=0, microsecond=0),
                 'volume' : 52108224,
+                'open'   : 6.25,
                 'close'  : 6.50,
                 'low'    : 6.19,
                 'high'   : 6.52
@@ -112,6 +119,7 @@ class TestYahooCrawler(unittest.TestCase):
                 'date'   : datetime.fromtimestamp(1511746200, tz=tzinfo)\
                                     .replace(hour=15, minute=0, second=0, microsecond=0),
                 'volume' : 54005417,
+                'open'   : 6.49,
                 'close'  : 6.51,
                 'low'    : 6.45,
                 'high'   : 6.67

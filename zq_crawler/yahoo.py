@@ -69,6 +69,7 @@ def extract_stock_data(rsp):
     code = rsp['chart']['result'][0]['meta']['symbol']
     timestamps = rsp['chart']['result'][0]['timestamp']
     volumes = rsp['chart']['result'][0]['indicators']['quote'][0]['volume']
+    opens = rsp['chart']['result'][0]['indicators']['quote'][0]['open']
     closes = rsp['chart']['result'][0]['indicators']['quote'][0]['close']
     highs = rsp['chart']['result'][0]['indicators']['quote'][0]['high']
     lows = rsp['chart']['result'][0]['indicators']['quote'][0]['low']
@@ -86,6 +87,7 @@ def extract_stock_data(rsp):
             'date'   : datetime.fromtimestamp(timestamps[i], tz=tzinfo)\
                                 .replace(hour=15, minute=0, second=0, microsecond=0),
             'volume' : volumes[i],
+            'open'   : round(opens[i], 2),
             'close'  : round(closes[i], 2),
             'high'   : round(highs[i], 2),
             'low'    : round(lows[i], 2)

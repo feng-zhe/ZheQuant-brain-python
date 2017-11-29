@@ -55,8 +55,8 @@ def inc_pct(cmd_str):
         end_doc = get_single_stock_data(code, end_dt)
         if not begin_doc or not end_doc:
             return 'No records in specified date'
-        begin_value += begin_doc['close_price'] * num
-        end_value += end_doc['close_price'] * num
+        begin_value += begin_doc['close'] * num
+        end_value += end_doc['close'] * num
     if not begin_value:
         return 'Begin value is zero, cannot calculate'
     return (curr_value - begin_value) / begin_value
