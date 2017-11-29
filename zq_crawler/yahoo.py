@@ -2,11 +2,11 @@
 The crawler to extract stock data from finance.yahoo.com
 '''
 
-import requests
-import pytz
 from datetime import datetime
+import pytz
+import requests
 
-def request_data(start, end, code=None):
+def request_data(start, end, code=None, interval='1d'):
     '''
     Send requests to yahoo to get data
 
@@ -21,8 +21,21 @@ def request_data(start, end, code=None):
 
     Raises:
         N/A
-    ''' #TODO
-    pass
+    '''
+
+    url = 'https://query1.finance.yahoo.com/v8/finance/chart/' + code
+    params = {
+        'symbol'         : code,
+        'period1'        : start.timestamp(),
+        'period2'        : end.timestamp(),
+        'interval'       : interval,
+        'includePrePost' : 'true',
+        'events'         : 'div|split|earn',
+        'corsDomain'     : 'finance.yahoo.com'
+    }
+
+    rst = requests.get(url, params)
+    return rst.json()
 
 def insert_stock_data(docs):
     '''
@@ -53,26 +66,30 @@ def extract_stock_data(rsp):
     Raises:
         KeyError, TypeError, IndexError, RuntimeError
     '''
-    code       = rsp['chart']['result'][0]['meta']['symbol']
+    code = rsp['chart']['result'][0]['meta']['symbol']
     timestamps = rsp['chart']['result'][0]['timestamp']
-    volumes    = rsp['chart']['result'][0]['indicators']['quote'][0]['volume']
-    closes     = rsp['chart']['result'][0]['indicators']['quote'][0]['close']
-    highs      = rsp['chart']['result'][0]['indicators']['quote'][0]['high']
-    lows       = rsp['chart']['result'][0]['indicators']['quote'][0]['low']
-    lens       = len(timestamps)
+    volumes = rsp['chart']['result'][0]['indicators']['quote'][0]['volume']
+    closes = rsp['chart']['result'][0]['indicators']['quote'][0]['close']
+    highs = rsp['chart']['result'][0]['indicators']['quote'][0]['high']
+    lows = rsp['chart']['result'][0]['indicators']['quote'][0]['low']
+    tzname = rsp['chart']['result'][0]['meta']['exchangeTimezoneName']
+    lens = len(timestamps)
 
-    if not len(timestamps)==len(volumes)==len(closes)==len(highs)==len(lows):
-        raise RunetimeError('Length of data fields is not consistent')
+    if not len(timestamps) == len(volumes) == len(closes) == len(highs) == len(lows):
+        raise RuntimeError('Length of data fields is not consistent')
 
-    tz = pytz.timezone('Asia/Shanghai')
-    return [{
+    tzinfo = pytz.timezone(tzname)
+
+    return [
+        {
             'code'   : code,
-            'date'   : datetime.fromtimestamp(timestamps[i],tz=tz).replace(hour=15,minute=0,second=0,microsecond=0),
+            'date'   : datetime.fromtimestamp(timestamps[i], tz=tzinfo)\
+                                .replace(hour=15, minute=0, second=0, microsecond=0),
             'volume' : volumes[i],
-            'close'  : round(closes[i],2),
-            'high'   : round(highs[i],2),
-            'low'    : round(lows[i],2)
-            } for i in range(0,lens) if(volumes[i])]
+            'close'  : round(closes[i], 2),
+            'high'   : round(highs[i], 2),
+            'low'    : round(lows[i], 2)
+        } for i in range(0, lens) if volumes[i]]
 
 def crawl(cmd):
     '''
