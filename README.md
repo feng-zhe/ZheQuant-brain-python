@@ -5,6 +5,7 @@ This project is a sub-project to the ZheQuant. It is used as the worker for time
 ### CI Status
 
 [![Build Status](https://travis-ci.org/feng-zhe/ZheQuant-brain-python.svg?branch=master)](https://travis-ci.org/feng-zhe/ZheQuant-brain-python)
+[![Coverage Status](https://coveralls.io/repos/github/feng-zhe/ZheQuant-brain-python/badge.svg?branch=master)](https://coveralls.io/github/feng-zhe/ZheQuant-brain-python?branch=master)
 
 ### Notice
 
