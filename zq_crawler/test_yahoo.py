@@ -6,28 +6,15 @@ import unittest
 import json
 from datetime import datetime
 import pytz
-from zq_crawler.yahoo import extract_stock_data, request_data
+from zq_crawler.yahoo import *
 
 # Unit test class
 class TestYahooCrawler(unittest.TestCase):
     '''
     test case for yahoo crawler
     '''
-    def test_request_data(self):
-        '''
-        test request data from internet
-        '''
-        tzinfo = pytz.timezone('Asia/Shanghai')
-        start = datetime(2017, 11, 18, tzinfo=tzinfo)
-        end = datetime(2017, 11, 22, tzinfo=tzinfo)
-        rsp = request_data(start, end, '600497.SS')
-        self.assertIsNotNone(rsp)
-
-    def test_extract_stock_data(self):
-        '''
-        test extracting data from response
-        '''
-        rsp_str = '{"chart":{"result":[{"meta":{"currency":"CNY","symbol":"600497.SS",\
+    # test response string
+    _rsp_str = '{"chart":{"result":[{"meta":{"currency":"CNY","symbol":"600497.SS",\
                 "exchangeName":"SHH","instrumentType":"EQUITY","firstTradeDate":1082424600,\
                 "gmtoffset":28800,"timezone":"CST","exchangeTimezoneName":"Asia/Shanghai",\
                 "currentTradingPeriod":{"pre":{"timezone":"CST","end":1511746200,"start":1511746200,\
@@ -49,8 +36,28 @@ class TestYahooCrawler(unittest.TestCase):
                 "adjclose":[{"adjclose":[null,6.510000228881836,6.199999809265137,6.239999771118164,\
                 6.179999828338623,6.269999980926514,6.309999942779541,6.5,6.510000228881836]}]}}],\
                 "error":null}}'
-        response = json.loads(rsp_str)
-        act_docs = extract_stock_data(response)
+
+    def test_request_data(self):
+        '''
+        test request data from internet
+        '''
+        tzinfo = pytz.timezone('Asia/Shanghai')
+        start = datetime(2017, 11, 18, tzinfo=tzinfo)
+        end = datetime(2017, 11, 22, tzinfo=tzinfo)
+        rsp = request_data(start, end, '600497.SS')
+        self.assertIsNotNone(rsp)
+
+    def test_validate_response(self):
+        '''
+        test response validation
+        '''
+        self.assertTrue(validate_response(self._rsp_str))
+
+    def test_extract_stock_data(self):
+        '''
+        test extracting data from response
+        '''
+        act_docs = extract_stock_data(self._rsp_str)
         tzinfo = pytz.timezone('Asia/Shanghai')
         exp_docs = [
             {
