@@ -6,13 +6,23 @@ import unittest
 import json
 from datetime import datetime
 import pytz
-from zq_crawler.yahoo import extract_stock_data
+from zq_crawler.yahoo import extract_stock_data, request_data
 
 # Unit test class
 class TestYahooCrawler(unittest.TestCase):
     '''
     test case for yahoo crawler
     '''
+    def test_request_data(self):
+        '''
+        test request data from internet
+        '''
+        tzinfo = pytz.timezone('Asia/Shanghai')
+        start = datetime(2017, 11, 18, tzinfo=tzinfo)
+        end = datetime(2017, 11, 22, tzinfo=tzinfo)
+        rsp = request_data(start, end, '600497.SS')
+        self.assertIsNotNone(rsp)
+
     def test_extract_stock_data(self):
         '''
         test extracting data from response

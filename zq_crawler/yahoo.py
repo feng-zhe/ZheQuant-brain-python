@@ -26,8 +26,8 @@ def request_data(start, end, code=None, interval='1d'):
     url = 'https://query1.finance.yahoo.com/v8/finance/chart/' + code
     params = {
         'symbol'         : code,
-        'period1'        : start.timestamp(),
-        'period2'        : end.timestamp(),
+        'period1'        : int(start.timestamp()),
+        'period2'        : int(end.timestamp()),
         'interval'       : interval,
         'includePrePost' : 'true',
         'events'         : 'div|split|earn',
@@ -35,6 +35,8 @@ def request_data(start, end, code=None, interval='1d'):
     }
 
     rst = requests.get(url, params)
+    if rst.status_code!=200:
+        return None
     return rst.json()
 
 def insert_stock_data(docs):
