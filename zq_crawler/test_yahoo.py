@@ -157,7 +157,7 @@ class TestYahooCrawler(unittest.TestCase):
         Otherwise the test may fail
         '''
         tzinfo = pytz.timezone('Asia/Shanghai')
-        month = random.randint(1, 12)
+        month = random.randint(1, 11)
         day = random.randint(1, 20)
         start = datetime(2017, month, day, tzinfo=tzinfo)
         end = start + timedelta(days=15)            
