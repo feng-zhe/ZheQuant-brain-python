@@ -124,7 +124,7 @@ def extract_stock_data(response):
 
 def crawl(cmd):
     '''
-    Main function
+    Main function to parse the command and then start crawling
 
     Args:
         cmd:    The command string

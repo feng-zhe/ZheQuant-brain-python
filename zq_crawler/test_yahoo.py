@@ -4,14 +4,16 @@ Unit Tests for yahoo.py
 
 import unittest
 import json
+import random
 from datetime import datetime
+from datetime import timedelta
 import pytz
 from zq_crawler.yahoo import *
 
 # Unit test class
 class TestYahooCrawler(unittest.TestCase):
     '''
-    test case for yahoo crawler
+    Test case for yahoo crawler
     '''
     # test response string
     _rsp_str = '{"chart":{"result":[{"meta":{"currency":"CNY","symbol":"600497.SS",\
@@ -37,25 +39,15 @@ class TestYahooCrawler(unittest.TestCase):
                 6.179999828338623,6.269999980926514,6.309999942779541,6.5,6.510000228881836]}]}}],\
                 "error":null}}'
 
-    def test_request_data(self):
-        '''
-        test request data from internet
-        '''
-        tzinfo = pytz.timezone('Asia/Shanghai')
-        start = datetime(2017, 11, 18, tzinfo=tzinfo)
-        end = datetime(2017, 11, 22, tzinfo=tzinfo)
-        rsp = request_data(start, end, '600497.SS')
-        self.assertIsNotNone(rsp)
-
     def test_validate_response(self):
         '''
-        test response validation
+        Test response validation
         '''
         self.assertTrue(validate_response(self._rsp_str))
 
     def test_extract_stock_data(self):
         '''
-        test extracting data from response
+        Test extracting data from response
         '''
         act_docs = extract_stock_data(self._rsp_str)
         tzinfo = pytz.timezone('Asia/Shanghai')
@@ -143,6 +135,37 @@ class TestYahooCrawler(unittest.TestCase):
             }
             ]
         self.assertEqual(act_docs, exp_docs)
+
+    def test_request_data(self):
+        '''
+        Test request data from internet. 
+        
+        The internet connection must be correct. So as the response format.
+        '''
+        tzinfo = pytz.timezone('Asia/Shanghai')
+        start = datetime(2017, 11, 18, tzinfo=tzinfo)
+        end = datetime(2017, 11, 22, tzinfo=tzinfo)
+        rsp = request_data(start, end, '600497.SS')
+        self.assertIsNotNone(rsp)
+        self.assertTrue(validate_response(rsp))
+
+    def test_one_attempt(self):
+        '''
+        Go through one attempt to crawl data
+
+        Aassuming there is no 15-day continuous vacation
+        Otherwise the test may fail
+        '''
+        tzinfo = pytz.timezone('Asia/Shanghai')
+        month = random.randint(1, 12)
+        day = random.randint(1, 20)
+        start = datetime(2017, month, day, tzinfo=tzinfo)
+        end = start + timedelta(days=15)            
+        rsp = request_data(start, end, '600497.SS')
+        self.assertIsNotNone(rsp)
+        self.assertTrue(validate_response(rsp))
+        docs = extract_stock_data(rsp)
+        self.assertNotEqual(len(docs), 0)
 
 if __name__ == '__main__':
     unittest.main()
