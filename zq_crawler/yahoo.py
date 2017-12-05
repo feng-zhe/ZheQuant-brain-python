@@ -7,6 +7,7 @@ import json
 from datetime import datetime
 import pytz
 import requests
+from zq_gen.str import cmd_str2dic
 
 def request_data(start, end, code=None, interval='1d'):
     '''
@@ -127,16 +128,49 @@ def crawl(cmd):
     Main function to parse the command and then start crawling
 
     Args:
-        cmd:    The command string
+        cmd:    The command string.
+                "-s" for start date. "-e" for end date.
+                "-c" for stock code.
+                e.g.: -s YYYY-MM-DD -e YYYY-MM-DD -c XXXXXX.SS
 
     Returns:
-        None
+        True if no exception occurred.
+        Otherwise False
 
     Raises:
         N/A
     '''
     #TODO
-    pass
+    opts = cmd_str2dic(cmd)
+    try:
+        opt_s = opts['-s']
+        opt_e = opts['-e']
+        code = opts['-c']
+        syear = int(opt_s[0:4])
+        smonth = int(opt_s[5:7])
+        sday = int(opt_s[8:10])
+        eyear = int(opt_e[0:4])
+        emonth = int(opt_e[5:7])
+        eday = int(opt_e[8:10])
+    except Exception as e:
+        print('[!] Error during parsing the command (crawl)')
+        return False
+    except:
+        print('[!] Unkown error (crawl)')
+        return False
+    else:
+        tzinfo = pytz.timezone('Asia/Shanghai')
+        start = datetime(syear, smonth, sday, tzinfo=tzinfo)
+        end = datetime(eyear, emonth, eday, tzinfo=tzinfo)
+        rsp = request_data(start, end, code)
+        docs = extract_stock_data(rsp)
+        print('[+] Crawled {0} records'.format(len(docs)))
+        if insert_stock_data(docs):
+            print('[+] Insert to db successfully')
+            return True
+        else:
+            print('[!] Failed to insert to db')
+            return False
 
 def insert_stock_data(docs):
     '''
