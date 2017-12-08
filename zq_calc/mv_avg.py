@@ -1,5 +1,5 @@
-from zq_db.mongodb import get_recent_stock_data
-from zq_gen.str import cmd_str2dic
+import zq_db.mongodb as zq_mgdb
+import zq_gen.str as zq_genstr
 
 def mv_avg(cmd_str):
     '''Calculate the top stocks ranked by moving average
@@ -15,19 +15,19 @@ def mv_avg(cmd_str):
     Raises:
        N/A 
     '''
-    cmd_dict = cmd_str2dic(cmd_str)
+    cmd_dict = zq_genstr.cmd_str2dic(cmd_str)
     days = int(cmd_dict['-d'])
     num = int(cmd_dict['-n'])
     rst = []
-    data = get_recent_stock_data(days)                                      # the data is a list of lists each of which represents docs of one stock
+    data = zq_mgdb.get_recent_stock_data(days)              # the data is a list of lists each of which represents docs of one stock
     for docs in data:
         price_now = docs[0]['close']
         code = docs[0]['code']
         sum = 0
-        for doc in docs:                                                    # average price calculation includes the current price
+        for doc in docs:                                    # average price calculation includes the current price
             sum += doc['close']
         avg = sum/len(docs)
-        diff = avg - price_now                                              # currently use average minus current price
+        diff = round(avg-price_now, 2)                      # currently use average minus current price
         rst.append({'code': code, 'diff': diff})
     rst = sorted(rst, key=lambda k: k['diff'], reverse=True)
     return rst[0:num]
