@@ -51,6 +51,28 @@ class TestMovingAverage(unittest.TestCase):
             ]
         ]
 
+    def test_parse_params(self):
+        '''
+        Test extract parameters from command lines
+        '''
+        cmd = '-d 20 -n 5'
+        act_rst = zq_calc_ma._parse_params(cmd)
+        exp_rst = (20, 5)
+        self.assertEqual(act_rst, exp_rst)
+
+    def test_diff_avg(self):
+        '''
+        Test the math function to calculate difference
+        '''
+        data = []
+        act_rst = zq_calc_ma._diff_avg(data)
+        exp_rst = 'N/A'
+        self.assertEqual(act_rst, exp_rst)
+        data = [1.09, 2.57, 3.79, 4.77, 5.33, 6.23]
+        act_rst = zq_calc_ma._diff_avg(data)
+        exp_rst = 2.87
+        self.assertEqual(act_rst, exp_rst)
+
     @mock.patch('zq_db.mongodb.get_recent_stock_data')
     def test_mv_avg(self, mocked_func):
         '''

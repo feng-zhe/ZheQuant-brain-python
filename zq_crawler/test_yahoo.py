@@ -151,7 +151,7 @@ class TestYahooCrawler(unittest.TestCase):
 
     def test_one_attempt(self):
         '''
-        Go through one attempt to crawl data
+        Go through one attempt to crawl data (without database updating)
 
         Aassuming there is no 15-day continuous vacation
         Otherwise the test may fail
