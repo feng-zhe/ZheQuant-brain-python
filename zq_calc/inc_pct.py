@@ -4,8 +4,9 @@ This module contains calculator to calculate the increased percentage
 
 import json
 import datetime
-from zq_gen.str import cmd_str2dic
-from zq_db.mongodb import get_single_stock_data
+import pytz
+import zq_gen.str as zq_str
+import zq_db.mongodb as zq_mgdb
 
 def inc_pct(cmd_str):
     '''Calculate the increasement by percentage
@@ -23,14 +24,14 @@ def inc_pct(cmd_str):
                     -e: A string shows the end date in format YYYYMMDD
 
     Returns:
-        A number indicating the increasement percentage if succeed.
-            e.g. return 0.01 means 1%
+        A number with four decimals indicating the increasement percentage if succeed.
+            e.g. return 0.0111 means 1.11%
         Otherwise returns a string indicating the problem.
 
     Raises:
         N/A
     '''
-    cmd_dict    = cmd_str2dic(cmd_str)
+    cmd_dict    = zq_str.cmd_str2dic(cmd_str)
     try:
         compo_str   = cmd_dict['-c']
         begin_str   = cmd_dict['-b']
@@ -45,18 +46,19 @@ def inc_pct(cmd_str):
         return 'Missing parameter in command string'
     except ValueError:
         return 'Error in parsing the command string'
-    begin_dt    = datetime.datetime(begin_year, begin_month, begin_day, tzinfo=timezone.utc)
-    end_dt      = datetime.datetime(end_year, end_month, end_day, tzinfo=timezone.utc)
-    compo       = json.loads(compo_str)
+    tzinfo = pytz.timezone('Asia/Shanghai')
+    begin_dt = datetime.datetime(begin_year, begin_month, begin_day, tzinfo=tzinfo)
+    end_dt = datetime.datetime(end_year, end_month, end_day, tzinfo=tzinfo)
+    compo = json.loads(compo_str)
     begin_value = 0
-    end_value   = 0
-    for code, num in compo:
-        begin_doc = get_single_stock_data(code, begin_dt)
-        end_doc = get_single_stock_data(code, end_dt)
+    end_value = 0
+    for code, num in compo.items():
+        begin_doc = zq_mgdb.get_single_stock_data(code, begin_dt)
+        end_doc = zq_mgdb.get_single_stock_data(code, end_dt)
         if not begin_doc or not end_doc:
             return 'No records in specified date'
         begin_value += begin_doc['close'] * num
         end_value += end_doc['close'] * num
     if not begin_value:
         return 'Begin value is zero, cannot calculate'
-    return (curr_value - begin_value) / begin_value
+    return round((end_value - begin_value) / begin_value, 4)
