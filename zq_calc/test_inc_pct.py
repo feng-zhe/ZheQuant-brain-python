@@ -9,6 +9,16 @@ tzinfo = pytz.timezone('Asia/Shanghai')
 def mock_db_func(code, date):
     mock_data = [
         {
+            'code'  : 'test_code_0',
+            'date'  : datetime(2017,12,11,tzinfo=tzinfo),
+            'close' : 0
+        },
+        {
+            'code'  : 'test_code_0',
+            'date'  : datetime(2017,12,15,tzinfo=tzinfo),
+            'close' : 10
+        },
+        {
             'code'  : 'test_code_1',
             'date'  : datetime(2017,12,11,tzinfo=tzinfo),
             'close' : 11.36
@@ -55,7 +65,16 @@ class TestIncreasingPercentage(unittest.TestCase):
         act_rst = zq_inc_pct.inc_pct(cmd_str)
         exp_rst = zq_inc_pct.val_err_msg
         self.assertEqual(act_rst, exp_rst)
-        # ValueError case
+        # no-records case
+        cmd_str = '-c {"test_code_4":100, "test_code_5":200} -b 20171211 -e 20171215'
+        act_rst = zq_inc_pct.inc_pct(cmd_str)
+        exp_rst = zq_inc_pct.no_rcrd_msg
+        self.assertEqual(act_rst, exp_rst)
+        # begin-value-zero case
+        cmd_str = '-c {"test_code_0":100} -b 20171211 -e 20171215'
+        act_rst = zq_inc_pct.inc_pct(cmd_str)
+        exp_rst = zq_inc_pct.begin_zero_msg
+        self.assertEqual(act_rst, exp_rst)
 
     def test_parse_cmd(self):
         # normal case

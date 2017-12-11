@@ -10,6 +10,8 @@ import zq_db.mongodb as zq_mgdb
 
 key_err_msg = 'Missing parameter in command string'
 val_err_msg = 'Error in parsing the command string'
+no_rcrd_msg = 'No records in specified date'
+begin_zero_msg = 'Begin value is zero, cannot calculate'
 
 def inc_pct(cmd_str):
     '''
@@ -47,11 +49,11 @@ def inc_pct(cmd_str):
         begin_doc = zq_mgdb.get_single_stock_data(code, begin)
         end_doc = zq_mgdb.get_single_stock_data(code, end)
         if not begin_doc or not end_doc:
-            return 'No records in specified date'
+            return no_rcrd_msg
         begin_value += begin_doc['close'] * num
         end_value += end_doc['close'] * num
     if not begin_value:
-        return 'Begin value is zero, cannot calculate'
+        return begin_zero_msg
     return round((end_value - begin_value) / begin_value, 4)
 
 def _parse_cmd(cmd_str):
