@@ -39,11 +39,23 @@ class TestIncreasingPercentage(unittest.TestCase):
     '''
     @mock.patch('zq_db.mongodb.get_single_stock_data')
     def test_inc_pct(self, mocked_func):
+        # normal case
         mocked_func.side_effect = mock_db_func
         cmd_str = '-c {"test_code_1":100, "test_code_2":200} -b 20171211 -e 20171215'
         act_rst = zq_inc_pct.inc_pct(cmd_str)
         exp_rst = 0.0522
         self.assertEqual(act_rst, exp_rst)
+        # KeyError case
+        cmd_str = '-c {"test_code_1":100, "test_code_2":200} -b 20171211'
+        act_rst = zq_inc_pct.inc_pct(cmd_str)
+        exp_rst = zq_inc_pct.key_err_msg
+        self.assertEqual(act_rst, exp_rst)
+        # ValueError case
+        cmd_str = '-c {"test_code_1":100, "test_code_2":200} -b 201712aa -e 201712bb'
+        act_rst = zq_inc_pct.inc_pct(cmd_str)
+        exp_rst = zq_inc_pct.val_err_msg
+        self.assertEqual(act_rst, exp_rst)
+        # ValueError case
 
     def test_parse_cmd(self):
         # normal case

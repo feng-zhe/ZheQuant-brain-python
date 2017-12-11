@@ -8,6 +8,9 @@ import pytz
 import zq_gen.str as zq_str
 import zq_db.mongodb as zq_mgdb
 
+key_err_msg = 'Missing parameter in command string'
+val_err_msg = 'Error in parsing the command string'
+
 def inc_pct(cmd_str):
     '''
     Calculate the increasement by percentage
@@ -35,9 +38,9 @@ def inc_pct(cmd_str):
     try:
         compo, begin, end = _parse_cmd(cmd_str)
     except KeyError:
-        return 'Missing parameter in command string'
+        return key_err_msg
     except ValueError:
-        return 'Error in parsing the command string'
+        return val_err_msg
     begin_value = 0
     end_value = 0
     for code, num in compo.items():
