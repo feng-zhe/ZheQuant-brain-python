@@ -3,7 +3,7 @@ Unit Tests for str.py
 '''
 
 import unittest
-from .str import cmd_str2dic
+from zq_gen.str import cmd_str2dic
 
 # Unit test class
 class TestString(unittest.TestCase):
